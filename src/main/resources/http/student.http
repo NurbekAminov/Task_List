@@ -1,0 +1,48 @@
+### Create student
+POST localhost:8080/student/create
+Content-Type: application/json
+
+{
+  "name": "Ali",
+  "surname": "Aliyev",
+  "age": 18,
+  "phone": "123456"
+}
+
+
+### Create student all
+POST localhost:8080/student/create/all
+Content-Type: application/json
+
+[
+  {
+    "name": "Toshmat",
+    "surname": "Toshmatov",
+    "age": 32,
+    "phone": "33333"
+  },
+  {
+    "name": "Vali",
+    "surname": "Aliyev",
+    "age": 20,
+    "phone": "222222"
+  }
+]
+
+### Get all student
+GET localhost:8080/student/all
+
+### Get by id
+GET localhost:8080/student/12345
+
+### Delete by id
+DELETE localhost:8080/student/dc68471c-4554-4ca7-a191-514a8660603a
+
+### Delete by id
+PUT localhost:8080/student/30ff40a6-6231-427c-bbcc-58da12db9884
+Content-Type: application/json
+
+{
+  "name": "Alijon",
+  "surname": "Aliyevhon"
+}
