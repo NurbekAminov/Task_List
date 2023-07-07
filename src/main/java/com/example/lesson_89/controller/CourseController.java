@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/course")
 public class CourseController {
@@ -20,9 +22,20 @@ public class CourseController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/all")
+    public List<CourseDTO> all() {
+        return courseService.getAll();
+    }
+
     @GetMapping(value = "/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(courseService.getById(id));
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<?> put(@RequestBody CourseDTO course, @PathVariable("id") Integer id) {
+        courseService.update(id, course);
+        return ResponseEntity.ok(true);
     }
 
     @DeleteMapping(value = "/{id}")
@@ -32,13 +45,6 @@ public class CourseController {
             return ResponseEntity.ok("Student deleted");
         }
         return ResponseEntity.badRequest().body("Student Not Found");
-    }
-
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<?> put(@RequestBody CourseDTO course,
-                                 @PathVariable("id") Integer id) {
-        courseService.update(id, course);
-        return ResponseEntity.ok(true);
     }
 
 }

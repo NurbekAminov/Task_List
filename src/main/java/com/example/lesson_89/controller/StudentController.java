@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -39,6 +41,11 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getById(id));
     }
 
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<?> put(@RequestBody StudentDTO student, @PathVariable("id") Integer id) {
+        return ResponseEntity.ok(studentService.update(id, student));
+    }
+
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<String> delete(@PathVariable("id") Integer id) {
         Boolean response = studentService.delete(id);
@@ -48,12 +55,54 @@ public class StudentController {
         return ResponseEntity.badRequest().body("Student Not Found");
     }
 
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<?> put(@RequestBody StudentDTO student,
-                                 @PathVariable("id") Integer id) {
-        studentService.update(id, student);
-        return ResponseEntity.ok(true);
+    @GetMapping(value = "/name")
+    public ResponseEntity<?> getByName(@RequestParam String name) {
+        List<?> studentDTOList = studentService.getByName(name);
+        return ResponseEntity.ok(studentDTOList);
     }
 
+    @GetMapping(value = "/surname")
+    public ResponseEntity<?> getBySurname(@RequestParam String surname) {
+        List<?> studentDTOList = studentService.getBySurname(surname);
+        return ResponseEntity.ok(studentDTOList);
+    }
+
+    @GetMapping(value = "/level")
+    public ResponseEntity<?> getByLevel(@RequestParam Integer level) {
+        List<?> studentDTOList = studentService.getByLevel(level);
+        return ResponseEntity.ok(studentDTOList);
+    }
+
+    @GetMapping(value = "/age")
+    public ResponseEntity<?> getByAge(@RequestParam Integer age) {
+        List<?> studentDTOList = studentService.getByAge(age);
+        return ResponseEntity.ok(studentDTOList);
+    }
+
+    @GetMapping("/age")
+    public ResponseEntity<?> getStudentBetweenAge(@RequestParam Integer from, @RequestParam Integer to) {
+        List<?> studentDTOList = studentService.findByAge(from, to);
+        return ResponseEntity.ok(studentDTOList);
+    }
+
+    @GetMapping("/gender")
+    public ResponseEntity<?> getByGender(@RequestParam String gender) {
+        List<?> studentDTOList = studentService.getByGender(gender);
+        return ResponseEntity.ok(studentDTOList);
+    }
+
+    @GetMapping(value = "/byDate")
+    public ResponseEntity<?> getByDate(@RequestParam("Date") LocalDate date) {
+        studentService.getByDate(date);
+        return ResponseEntity.ok().build();
+    }
+
+
+    @GetMapping(value = "/pagination")
+    public ResponseEntity<?> pagination(@RequestParam(value = "page", defaultValue = "1") int page,
+                                        @RequestParam(value = "size", defaultValue = "10") int size) {
+        studentService.studentPagination(page - 1, size);
+        return ResponseEntity.ok().build();
+    }
 
 }

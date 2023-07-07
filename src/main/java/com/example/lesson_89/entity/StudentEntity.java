@@ -30,5 +30,8 @@ public class StudentEntity {
     private String gender;
 
     @Column(name = "created_date")
-    private LocalDateTime createdDate;
+    private LocalDateTime createdDate = LocalDateTime.now();
+
+    @Column(name = "visible")
+    private Boolean visible = Boolean.TRUE;
 }

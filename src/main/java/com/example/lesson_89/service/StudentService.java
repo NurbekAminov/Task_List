@@ -1,13 +1,20 @@
 package com.example.lesson_89.service;
+
 import com.example.lesson_89.dto.StudentDTO;
 import com.example.lesson_89.entity.StudentEntity;
 import com.example.lesson_89.exp.AppBadRequestException;
 import com.example.lesson_89.exp.ItemNotFoundException;
 import com.example.lesson_89.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -17,59 +24,37 @@ import java.util.UUID;
 public class StudentService {
     @Autowired
     private StudentRepository studentRepository;
+
     public StudentDTO add(StudentDTO dto) {
         check(dto); // validate inputs
 
-        StudentEntity entity = new StudentEntity();
-        entity.setName(dto.getName());
-        entity.setSurname(dto.getSurname());
-        entity.setAge(dto.getAge());
-        dto.setLevel(entity.getLevel());
-        dto.setGender(entity.getGender());
-        entity.setCreatedDate(LocalDateTime.now());
+        StudentEntity entity = toEntity(dto);
 
         studentRepository.save(entity);
         dto.setId(entity.getId());
 
         return dto;
     }
-
     public List<StudentDTO> addAll(List<StudentDTO> list) {
         for (StudentDTO dto : list) {
-            StudentEntity entity = new StudentEntity();
-            entity.setName(dto.getName());
-            entity.setSurname(dto.getSurname());
-            entity.setAge(dto.getAge());
-            dto.setLevel(entity.getLevel());
-            dto.setGender(entity.getGender());
-            entity.setCreatedDate(LocalDateTime.now());
+            StudentEntity entity = toEntity(dto);
             studentRepository.save(entity);
             dto.setId(entity.getId());
         }
         return list;
     }
-
     public List<StudentDTO> getAll() {
         Iterable<StudentEntity> iterable = studentRepository.findAll();
         List<StudentDTO> dtoList = new LinkedList<>();
         iterable.forEach(entity -> {
-            StudentDTO dto = new StudentDTO();
-            dto.setId(entity.getId());
-            dto.setName(entity.getName());
-            dto.setSurname(entity.getSurname());
-            dto.setAge(entity.getAge());
-            dto.setLevel(entity.getLevel());
-            dto.setGender(entity.getGender());
-            dto.setCreatedDate(LocalDateTime.now());
             dtoList.add(toDTO(entity));
         });
         return dtoList;
     }
-
     public StudentDTO getById(Integer id) {
         Optional<StudentEntity> optional = studentRepository.findById(id);
         if (optional.isEmpty()) {
-            throw  new ItemNotFoundException("Student not found");
+            throw new ItemNotFoundException("Student not found");
         }
         StudentEntity entity = optional.get();
         return toDTO(entity);
@@ -79,35 +64,125 @@ public class StudentService {
 //            throw new ItemNotFoundException("Student not found");
 //        });
     }
-
-//    public StudentDTO getByPhone(String phone) {
-//        Optional<StudentEntity> optional = studentRepository.getByPhone(phone);
-//        if (optional.isEmpty()) {
-//            throw new ItemNotFoundException("Student not found");
-//        }
-//        StudentEntity entity = optional.get();
-//        return toDTO(entity);
-//    }
-
-    public Boolean delete(Integer id) {
-        Optional<StudentEntity> optional = studentRepository.findById(id);
-        if (optional.isEmpty()) {
-            throw  new ItemNotFoundException("Student not found");
-        }
-        studentRepository.deleteById(id);
-        return true;
-    }
-
     public Boolean update(Integer id, StudentDTO student) {
         check(student);
         Optional<StudentEntity> optional = studentRepository.findById(id);
+        if (optional.isPresent()) {
+            StudentEntity entity = optional.get();
+            entity.setName(student.getName());
+            entity.setSurname(student.getSurname());
+            entity.setAge(student.getAge());
+            entity.setLevel(student.getLevel());
+            entity.setGender(student.getGender());
+
+            studentRepository.save(entity);
+            return true;
+        }
+        return false;
+    }
+    public Boolean delete(Integer id) {
+        Optional<StudentEntity> optional = studentRepository.findById(id);
         if (optional.isEmpty()) {
-            throw  new ItemNotFoundException("Student not found");
+            return false;
         }
         studentRepository.deleteById(id);
-        add(student);
         return true;
     }
+    public List<StudentDTO> getByName(String name) {
+        Iterable<StudentEntity> iterable = studentRepository.getByName(name);
+        List<StudentDTO> dtoList = new LinkedList<>();
+        iterable.forEach(entity -> {
+            dtoList.add(toDTO(entity));
+        });
+        return dtoList;
+    }
+    public List<StudentDTO> getBySurname(String surname) {
+        Iterable<StudentEntity> iterable = studentRepository.getBySurname(surname);
+        List<StudentDTO> dtoList = new LinkedList<>();
+        iterable.forEach(entity -> {
+            dtoList.add(toDTO(entity));
+        });
+        return dtoList;
+    }
+    public List<StudentDTO> getByLevel(Integer level) {
+        Iterable<StudentEntity> iterable = studentRepository.getByLevel(level);
+        List<StudentDTO> dtoList = new LinkedList<>();
+        iterable.forEach(entity -> {
+            dtoList.add(toDTO(entity));
+        });
+        return dtoList;
+    }
+    public List<StudentDTO> getByAge(Integer age) {
+        Iterable<StudentEntity> iterable = studentRepository.getByAge(age);
+        List<StudentDTO> dtoList = new LinkedList<>();
+        iterable.forEach(entity -> {
+            dtoList.add(toDTO(entity));
+        });
+        return dtoList;
+    }
+    public List<StudentDTO> findByAge(Integer from, Integer to) {
+        List<StudentEntity> studentEntityList = studentRepository.findByAgeBetween(from, to);
+        List<StudentDTO> dtoList = new LinkedList<>();
+        studentEntityList.forEach(entity -> dtoList.add(toDTO(entity)));
+        return dtoList;
+    }
+    public List<StudentDTO> getByGender(String gender) {
+        Iterable<StudentEntity> iterable = studentRepository.getByGender(gender);
+        List<StudentDTO> dtoList = new LinkedList<>();
+        iterable.forEach(entity -> {
+            dtoList.add(toDTO(entity));
+        });
+        return dtoList;
+    }
+    public List<StudentDTO> getByDate(LocalDate date) {
+        LocalDateTime from = LocalDateTime.of(date, LocalTime.MIN);
+        LocalDateTime to = LocalDateTime.of(date, LocalTime.MAX);
+
+        Iterable<StudentEntity> iterable = studentRepository.findByCreatedDateBetween(from, to);
+        List<StudentDTO> dtoList = new LinkedList<>();
+
+        iterable.forEach(entity -> {
+            dtoList.add(toDTO(entity));
+        });
+
+        return dtoList;
+    }
+    public List<StudentDTO> getByDateBetween(LocalDate from, LocalDate to) {
+        LocalDateTime from1 = LocalDateTime.of(from, LocalTime.MIN);
+        LocalDateTime to1 = LocalDateTime.of(to, LocalTime.MAX);
+
+        Iterable<StudentEntity> iterable = studentRepository.findByCreatedDateBetween(from1, to1);
+        List<StudentDTO> dtoList = new LinkedList<>();
+
+        iterable.forEach(entity -> {
+            dtoList.add(toDTO(entity));
+        });
+
+        return dtoList;
+    }
+    public List<StudentDTO> studentPagination(int page, int size) {
+        Pageable paging = PageRequest.of(page, size);
+        Page<StudentEntity> pageObj = studentRepository.findAll(paging);
+        List<StudentEntity> entityList = pageObj.getContent();
+        Long totalCount = pageObj.getTotalElements();
+
+        System.out.println();
+        return null;
+    }
+    public List<StudentDTO> getAllDateFrom(LocalDate localDate) {
+        Iterable<StudentEntity> iterable = studentRepository.findByCreatedDateAfter(LocalDateTime.of(localDate, LocalTime.MIN));
+        List<StudentDTO> dtoList = new LinkedList<>();
+        iterable.forEach(entity -> {
+            dtoList.add(toDTO(entity));
+        });
+        return dtoList;
+    }
+
+    /*public void test() {
+
+        String name = "Ali";
+        List<StudentEntity> studentEntityList = studentRepository.findAllByNameLike("%" + name + "%");
+    }*/
 
     private void check(StudentDTO student) {
         if (student.getName() == null || student.getName().isBlank()) {
@@ -117,8 +192,7 @@ public class StudentService {
             throw new AppBadRequestException("Surname qani?");
         }
     }
-
-    public StudentDTO toDTO(StudentEntity entity){
+    public StudentDTO toDTO(StudentEntity entity) {
         StudentDTO dto = new StudentDTO();
         dto.setId(entity.getId());
         dto.setName(entity.getName());
@@ -128,5 +202,15 @@ public class StudentService {
         dto.setGender(entity.getGender());
         dto.setCreatedDate(entity.getCreatedDate());
         return dto;
+    }
+    public StudentEntity toEntity(StudentDTO dto) {
+        StudentEntity entity = new StudentEntity();
+        entity.setName(dto.getName());
+        entity.setSurname(dto.getSurname());
+        entity.setAge(dto.getAge());
+        entity.setLevel(dto.getLevel());
+        entity.setGender(dto.getGender());
+        entity.setCreatedDate(LocalDateTime.now());
+        return entity;
     }
 }
