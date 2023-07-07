@@ -29,6 +29,7 @@ public class StudentEntity {
     @Column(name = "gender")
     private String gender;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date")
     private LocalDateTime createdDate = LocalDateTime.now();
 

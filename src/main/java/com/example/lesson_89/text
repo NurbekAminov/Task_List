@@ -33,7 +33,7 @@ Course
     13. Filter with pagination. Filter items (id,name,price,duration,createdDateFrom,createdDateTo)
 
 StudentCourseMark
-  id,studentId,courseId,mark,createdDate,
+  id,studentId,courseId,mark,createdDate
   1. Create StudentCourseMark
   2. Update StudentCourseMark
   3. Get StudentCourseMark by id.

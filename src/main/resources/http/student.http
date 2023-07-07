@@ -56,3 +56,6 @@
 #  22,
 #  24
 #]
+
+### get between age
+GET localhost:8080/student/betweenAge?from=10&to=20

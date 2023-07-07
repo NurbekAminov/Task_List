@@ -56,37 +56,38 @@ public class StudentController {
     }
 
     @GetMapping(value = "/name")
-    public ResponseEntity<?> getByName(@RequestParam String name) {
+    public ResponseEntity<?> getByName(@RequestParam("name") String name) {
         List<?> studentDTOList = studentService.getByName(name);
         return ResponseEntity.ok(studentDTOList);
     }
 
     @GetMapping(value = "/surname")
-    public ResponseEntity<?> getBySurname(@RequestParam String surname) {
+    public ResponseEntity<?> getBySurname(@RequestParam("surname") String surname) {
         List<?> studentDTOList = studentService.getBySurname(surname);
         return ResponseEntity.ok(studentDTOList);
     }
 
     @GetMapping(value = "/level")
-    public ResponseEntity<?> getByLevel(@RequestParam Integer level) {
+    public ResponseEntity<?> getByLevel(@RequestParam("level") Integer level) {
         List<?> studentDTOList = studentService.getByLevel(level);
         return ResponseEntity.ok(studentDTOList);
     }
 
     @GetMapping(value = "/age")
-    public ResponseEntity<?> getByAge(@RequestParam Integer age) {
+    public ResponseEntity<?> getByAge(@RequestParam("age") Integer age) {
         List<?> studentDTOList = studentService.getByAge(age);
         return ResponseEntity.ok(studentDTOList);
     }
 
-    @GetMapping("/age")
-    public ResponseEntity<?> getStudentBetweenAge(@RequestParam Integer from, @RequestParam Integer to) {
+    @GetMapping("/betweenAge")
+    public ResponseEntity<?> getStudentBetweenAge(@RequestParam("from") Integer from,
+                                                  @RequestParam("to") Integer to) {
         List<?> studentDTOList = studentService.findByAge(from, to);
         return ResponseEntity.ok(studentDTOList);
     }
 
     @GetMapping("/gender")
-    public ResponseEntity<?> getByGender(@RequestParam String gender) {
+    public ResponseEntity<?> getByGender(@RequestParam("gender") String gender) {
         List<?> studentDTOList = studentService.getByGender(gender);
         return ResponseEntity.ok(studentDTOList);
     }

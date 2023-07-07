@@ -24,6 +24,7 @@ public class CourseEntity {
     @Column(name = "duration")
     private Integer duration;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date")
     private LocalDateTime createdDate;
 
