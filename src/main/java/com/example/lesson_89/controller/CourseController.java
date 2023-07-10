@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -47,4 +49,17 @@ public class CourseController {
         return ResponseEntity.badRequest().body("Student Not Found");
     }
 
+    @GetMapping("/byPrice")
+    public ResponseEntity<?> GetCourseByPrice(@RequestParam("from") Integer from,
+                                                  @RequestParam("to") Integer to) {
+        List<?> courseDTOList = courseService.GetCourseByPrice(from, to);
+        return ResponseEntity.ok(courseDTOList);
+    }
+
+    @GetMapping(value = "/byDate")
+    public ResponseEntity<?> getByDate(@RequestParam("from") LocalDate from,
+                                       @RequestParam("to") LocalDate to) {
+        List<?> courseDTOList = courseService.getByDateBetween(from, to);
+        return ResponseEntity.ok(courseDTOList);
+    }
 }

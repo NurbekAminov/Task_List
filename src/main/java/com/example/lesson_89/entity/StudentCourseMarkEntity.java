@@ -29,4 +29,7 @@ public class StudentCourseMarkEntity {
 //    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date")
     private LocalDateTime createdDate;
+
+    @Column(name = "visible")
+    private Boolean visible = Boolean.TRUE;
 }

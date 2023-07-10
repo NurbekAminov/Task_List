@@ -63,7 +63,7 @@ public class StudentService {
 //            throw new ItemNotFoundException("Student not found");
 //        });
     }
-    public Boolean update(Integer id, StudentDTO student) {
+    public Boolean update2(Integer id, StudentDTO student) {
         check(student);
         Optional<StudentEntity> optional = studentRepository.findById(id);
         if (optional.isPresent()) {
@@ -79,8 +79,8 @@ public class StudentService {
         }
         return false;
     }
-    public Boolean update2(Integer id, StudentDTO student) {
-        int effectedRows = studentRepository.updateNameAndSurname(id, student.getName(), student.getSurname());
+    public Boolean update(Integer id, StudentDTO student) {
+        int effectedRows = studentRepository.update(id, student.getName(), student.getSurname(), student.getAge(), student.getLevel(), student.getGender());
         return effectedRows != 0;
     }
 

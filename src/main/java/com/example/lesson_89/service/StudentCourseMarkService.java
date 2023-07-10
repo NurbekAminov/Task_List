@@ -1,6 +1,7 @@
 package com.example.lesson_89.service;
 
 import com.example.lesson_89.dto.StudentCourseMarkDTO;
+import com.example.lesson_89.dto.StudentDTO;
 import com.example.lesson_89.entity.CourseEntity;
 import com.example.lesson_89.entity.StudentCourseMarkEntity;
 import com.example.lesson_89.entity.StudentEntity;
@@ -18,11 +19,17 @@ public class StudentCourseMarkService {
     @Autowired
     private StudentRepository studentRepository;
 
-    /*public StudentCourseMarkDTO add(StudentCourseMarkDTO dto){
+    public StudentCourseMarkDTO add(StudentCourseMarkDTO dto){
         StudentCourseMarkEntity entity = toEntity(dto);
         repository.save(entity);
+        dto.setId(entity.getId());
 
-    }*/
+        return dto;
+    }
+    public Boolean updateMark(Integer id, StudentCourseMarkDTO markDTO) {
+        int effectedRows = repository.updateMark(id, markDTO.getStudentId(), markDTO.getCourseId(), markDTO.getMark());
+        return effectedRows != 0;
+    }
 
     private StudentCourseMarkEntity toEntity(StudentCourseMarkDTO dto) {
         StudentEntity student = new StudentEntity();

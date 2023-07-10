@@ -35,8 +35,8 @@ public interface StudentRepository extends CrudRepository<StudentEntity, Integer
     Page<StudentEntity> findByName(String name, Pageable pageable);
     @Transactional
     @Modifying
-    @Query("update StudentEntity as s set s.name =:name, s.surname=:surname where s.id  =:id ")
-    int updateNameAndSurname(@Param("id") Integer id, @Param("name") String name, @Param("surname") String surname);
+    @Query("update StudentEntity as s set s.name =:name, s.surname=:surname, s.age=:age, s.level=:level, s.gender=:gender where s.id  =:id ")
+    int update(@Param("id") Integer id, @Param("name") String name, @Param("surname") String surname, @Param("age") Integer age, @Param("level") Integer level, @Param("gender") String gender);
     @Transactional
     @Modifying
     @Query("delete from StudentEntity as s where s.name =?1 and s.surname =?2 ")
