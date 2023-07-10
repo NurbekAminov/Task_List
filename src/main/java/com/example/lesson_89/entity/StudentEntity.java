@@ -29,10 +29,18 @@ public class StudentEntity {
     @Column(name = "gender")
     private String gender;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date")
     private LocalDateTime createdDate = LocalDateTime.now();
 
     @Column(name = "visible")
     private Boolean visible = Boolean.TRUE;
+
+    public StudentEntity() {
+    }
+
+    public StudentEntity(Integer id, String name, String surname) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+    }
 }

@@ -5,6 +5,7 @@ package com.example.lesson_89.controller;
 import com.example.lesson_89.dto.StudentDTO;
 import com.example.lesson_89.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -100,10 +101,18 @@ public class StudentController {
 
 
     @GetMapping(value = "/pagination")
-    public ResponseEntity<?> pagination(@RequestParam(value = "page", defaultValue = "1") int page,
-                                        @RequestParam(value = "size", defaultValue = "10") int size) {
-        studentService.studentPagination(page - 1, size);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<PageImpl<StudentDTO>> pagination(@RequestParam(value = "page", defaultValue = "1") int page,
+                                               @RequestParam(value = "size", defaultValue = "10") int size) {
+        PageImpl<StudentDTO> response = studentService.studentPagination(page - 1, size);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(value = "/pagination/name")
+    public ResponseEntity<PageImpl<StudentDTO>> paginationByName(@RequestParam(value = "page", defaultValue = "1") int page,
+                                                                 @RequestParam(value = "size", defaultValue = "10") int size,
+                                                                 @RequestParam(value = "name") String name) {
+        PageImpl<StudentDTO> response = studentService.studentPaginationByName(name, page - 1, size);
+        return ResponseEntity.ok(response);
     }
 
 }
