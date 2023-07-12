@@ -14,5 +14,5 @@ public class StudentCourseMarkDTO {
     private Integer studentId;
     private Integer courseId;
     private Integer mark;
-    private LocalDateTime localDateTime;
+    private LocalDateTime createdDate;
 }
