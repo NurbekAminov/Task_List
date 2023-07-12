@@ -3,6 +3,7 @@ package com.example.lesson_89.controller;
 
 
 import com.example.lesson_89.dto.StudentDTO;
+import com.example.lesson_89.dto.StudentFilterDTO;
 import com.example.lesson_89.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
@@ -107,11 +108,27 @@ public class StudentController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(value = "/pagination/name")
+    @GetMapping(value = "/pagination/level")
     public ResponseEntity<PageImpl<StudentDTO>> paginationByName(@RequestParam(value = "page", defaultValue = "1") int page,
                                                                  @RequestParam(value = "size", defaultValue = "10") int size,
-                                                                 @RequestParam(value = "name") String name) {
-        PageImpl<StudentDTO> response = studentService.studentPaginationByName(name, page - 1, size);
+                                                                 @RequestParam(value = "level") Integer level) {
+        PageImpl<StudentDTO> response = studentService.studentPaginationByLevel(level, page - 1, size);
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping(value = "/pagination/gender")
+    public ResponseEntity<PageImpl<StudentDTO>> paginationByGender(@RequestParam(value = "page", defaultValue = "1") int page,
+                                                                 @RequestParam(value = "size", defaultValue = "10") int size,
+                                                                 @RequestParam(value = "gender") Enum gender) {
+        PageImpl<StudentDTO> response = studentService.studentPaginationByGender(gender, page - 1, size);
+        return ResponseEntity.ok(response);
+    }
+
+
+    @PostMapping(value = "/filter")
+    public ResponseEntity<PageImpl<StudentDTO>> filter(@RequestBody StudentFilterDTO filterDTO,
+                                                       @RequestParam(value = "page", defaultValue = "1") int page,
+                                                       @RequestParam(value = "size", defaultValue = "10") int size) {
+        PageImpl<StudentDTO> response = studentService.filter(filterDTO, page - 1, size);
         return ResponseEntity.ok(response);
     }
 

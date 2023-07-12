@@ -1,14 +1,15 @@
 package com.example.lesson_89.service;
 
 import com.example.lesson_89.dto.StudentDTO;
+import com.example.lesson_89.dto.StudentFilterDTO;
 import com.example.lesson_89.entity.StudentEntity;
 import com.example.lesson_89.exp.AppBadRequestException;
 import com.example.lesson_89.exp.ItemNotFoundException;
+import com.example.lesson_89.repository.CustomStudentRepository;
 import com.example.lesson_89.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,13 +17,14 @@ import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
     @Autowired
     private StudentRepository studentRepository;
+    @Autowired
+    private CustomStudentRepository customStudentRepository;
 
     public StudentDTO add(StudentDTO dto) {
         check(dto); // validate inputs
@@ -63,7 +65,7 @@ public class StudentService {
 //            throw new ItemNotFoundException("Student not found");
 //        });
     }
-    public Boolean update2(Integer id, StudentDTO student) {
+    /*public Boolean update2(Integer id, StudentDTO student) {
         check(student);
         Optional<StudentEntity> optional = studentRepository.findById(id);
         if (optional.isPresent()) {
@@ -78,7 +80,7 @@ public class StudentService {
             return true;
         }
         return false;
-    }
+    }*/
     public Boolean update(Integer id, StudentDTO student) {
         int effectedRows = studentRepository.update(id, student.getName(), student.getSurname(), student.getAge(), student.getLevel(), student.getGender());
         return effectedRows != 0;
@@ -180,9 +182,15 @@ public class StudentService {
         PageImpl<StudentDTO> pageImpl = new PageImpl<StudentDTO>(studentDTOList, pageable, totalCount);
         return pageImpl;
     }
-    public PageImpl<StudentDTO> studentPaginationByName(String name, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
-        Page<StudentEntity> pageObj = studentRepository.findByName(name, pageable);
+    public PageImpl<StudentDTO> studentPaginationByLevel(Integer level, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
+        Page<StudentEntity> pageObj = studentRepository.findByLevel(level, pageable);
+        List<StudentDTO> studentDTOList = pageObj.stream().map(this::toDTO).collect(Collectors.toList());
+        return new PageImpl<>(studentDTOList, pageable, pageObj.getTotalElements());
+    }
+    public PageImpl<StudentDTO> studentPaginationByGender(Enum gender, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createdDate"));
+        Page<StudentEntity> pageObj = studentRepository.findByGender(gender, pageable);
         List<StudentDTO> studentDTOList = pageObj.stream().map(this::toDTO).collect(Collectors.toList());
         return new PageImpl<>(studentDTOList, pageable, pageObj.getTotalElements());
     }
@@ -193,6 +201,11 @@ public class StudentService {
             dtoList.add(toDTO(entity));
         });
         return dtoList;
+    }
+
+    public PageImpl<StudentDTO> filter(StudentFilterDTO filterDTO, int page, int size) {
+        customStudentRepository.filter(filterDTO, page, size);
+        return null;
     }
 
     /*public void test() {

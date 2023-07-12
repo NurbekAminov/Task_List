@@ -13,5 +13,5 @@ public interface StudentCourseMarkRepository extends CrudRepository<StudentCours
     @Transactional
     @Modifying
     @Query("update StudentCourseMarkEntity as s set s.studentId =:studentId, s.courseId=:courseId, s.mark=:mark where s.id  =:id ")
-    int updateMark(@Param("id") Integer id, @Param("studentId") Integer studentId, @Param("courseId") Integer courseId, @Param("mark") Integer mark);
+    int update(@Param("id") Integer id, @Param("studentId") Integer studentId, @Param("courseId") Integer courseId, @Param("mark") Integer mark);
 }

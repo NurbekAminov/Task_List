@@ -1,6 +1,7 @@
 package com.example.lesson_89.repository;
 
 import com.example.lesson_89.entity.StudentEntity;
+import com.example.lesson_89.mapper.StudentMapperI;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -32,11 +33,12 @@ public interface StudentRepository extends CrudRepository<StudentEntity, Integer
     List<StudentEntity> findByCreatedDateBetween(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
 
     List<StudentEntity> findByCreatedDateAfter(LocalDateTime date);
-    Page<StudentEntity> findByName(String name, Pageable pageable);
+    Page<StudentEntity> findByLevel(Integer level, Pageable pageable);
+    Page<StudentEntity> findByGender(Enum gender, Pageable pageable);
     @Transactional
     @Modifying
     @Query("update StudentEntity as s set s.name =:name, s.surname=:surname, s.age=:age, s.level=:level, s.gender=:gender where s.id  =:id ")
-    int update(@Param("id") Integer id, @Param("name") String name, @Param("surname") String surname, @Param("age") Integer age, @Param("level") Integer level, @Param("gender") String gender);
+    int update(@Param("id") Integer id, @Param("name") String name, @Param("surname") String surname, @Param("age") Integer age, @Param("level") Integer level, @Param("gender") Enum gender);
     @Transactional
     @Modifying
     @Query("delete from StudentEntity as s where s.name =?1 and s.surname =?2 ")
@@ -45,6 +47,23 @@ public interface StudentRepository extends CrudRepository<StudentEntity, Integer
     List<StudentEntity> getStudentShortDetail(@Param("name") String name);
     @Query("select new StudentEntity (s.id, s.name, s.surname) from StudentEntity as s where s.name =:name  order by s.createdDate limit 1")
     List<StudentEntity> getStudentShortDetailLimit(@Param("name") String name);
+    @Query(value = "select * from student as s where name=:name  order by s.created_date", nativeQuery = true)
+    List<StudentEntity> getStudentListByNameNative(@Param("name") String name);
+    @Query(value = "select s.id, s.name from student as s where name=:name order by s.created_date", nativeQuery = true)
+    List<Object[]> getStudentListByNameNative2(@Param("name") String name);
+    @Query(value = "select s.id, s.name, s.surname from student as s where name=:name order by s.created_date", nativeQuery = true)
+    List<StudentMapperI> getStudentListByNameNative3(@Param("name") String name);
+    @Query(value = "select s.id, s.name, s.surname from student as s where name =:name order by s.created_date offset :offset  limit :limit", nativeQuery = true)
+    List<StudentMapperI> getStudentListByNameNativePagination(@Param("name") String name,
+                                                              @Param("limit") int limit,
+                                                              @Param("offset") int offset);
+
+    @Query(value = "select count(*) from student as s where name =:name order by s.created_date offset :offset  limit :limit", nativeQuery = true)
+    Long getStudentListByNameNativePaginationCount(@Param("name") String name);
+
+    @Query(value = "select s.id, s.name, s.surname from student as s where name =:name order by s.created_date", nativeQuery = true)
+    Page<StudentMapperI> getStudentListByNameNativePagination(@Param("name") String name,Pageable pageable);
+
     List<StudentEntity> findAllByNameLike(String name);
     StudentEntity findFirstByAgeOrderByCreatedDateDesc(Integer age);
     StudentEntity findTopByAge(Integer age); // where age = ?  limit 1

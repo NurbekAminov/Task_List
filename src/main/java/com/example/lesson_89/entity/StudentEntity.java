@@ -1,5 +1,6 @@
 package com.example.lesson_89.entity;
 
+import com.example.lesson_89.enums.Gender;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +28,7 @@ public class StudentEntity {
     private Integer level;
 
     @Column(name = "gender")
-    private String gender;
+    private Enum gender;
 
     @Column(name = "created_date")
     private LocalDateTime createdDate = LocalDateTime.now();

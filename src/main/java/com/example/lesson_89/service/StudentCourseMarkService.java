@@ -27,7 +27,7 @@ public class StudentCourseMarkService {
         return dto;
     }
     public Boolean updateMark(Integer id, StudentCourseMarkDTO markDTO) {
-        int effectedRows = repository.updateMark(id, markDTO.getStudentId(), markDTO.getCourseId(), markDTO.getMark());
+        int effectedRows = repository.update(id, markDTO.getStudentId(), markDTO.getCourseId(), markDTO.getMark());
         return effectedRows != 0;
     }
 
